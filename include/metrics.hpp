@@ -3,16 +3,14 @@
 #include "core.hpp"
 #include <vector>
 #include <cmath>
-#include <numeric>
 
-// Модуль метрик и функций потерь.
+// Модуль метрик и функций потерь
 template <FloatingPoint T>
 class Metrics {
 public:
-    /**
-     * Реализация формулы Loss: сумма абсолютных отклонений.
-     * Показывает суммарное расстояние от всех точек до разделяющей линии.
-     */
+    // Сумма абсолютных ошибок для набора точек относительно линии y = kx + b
+    // Чем меньше, тем лучше модель описывает данные
+    // Формула: sum(|y - (kx + b)|) для всех точек
     static T totalAbsoluteError(const std::vector<Point<T>>& points, T k, T b) {
         T sum = 0;
         for (const auto& p : points) {
@@ -22,17 +20,19 @@ public:
         return sum;
     }
 
-    /**
-     * Среднеквадратичная ошибка
-     * Стандарт для нейросетей
-     */
+    //------------ На будущее, сейчас не используем ---------------
+    // Среднеквадратичная ошибка (MSE) для предсказаний модели
+    // Формула: (1/n) * sum((pred_i - target_i)^2) для всех предсказаний и истинных классов
+    // Чем меньше MSE, тем точнее модель предсказывает классы точек
     static T mse(const std::vector<T>& predictions, const std::vector<int>& targets) {
-        if (predictions.empty()) return 0;
+        if (predictions.empty()) return 0; // если вектор пустой - нет ошибок
         
         T errorSum = 0;
-        for (size_t i = 0; i < predictions.size(); ++i) {
-            T diff = predictions[i] - static_cast<T>(targets[i]);
-            errorSum += diff * diff;
+        for (size_t i = 0; i < predictions.size(); ++i) 
+        // Вычисляем квадрат разницы между предсказанием и истинным классом для каждой точки
+        {
+            T diff = predictions[i] - static_cast<T>(targets[i]); // Приводим целочисленный класс к типу T для корректного вычитания
+            errorSum += diff * diff; 
         }
         return errorSum / static_cast<T>(predictions.size());
     }
