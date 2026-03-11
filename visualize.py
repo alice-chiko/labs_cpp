@@ -5,7 +5,6 @@ def plot_data(filename='points.csv'):
     try:
         data = pd.read_csv(filename)
         
-        # Разделяем точки по классам 
         class_0 = data[data['label'] == 0]
         class_1 = data[data['label'] == 1]
 
@@ -22,7 +21,7 @@ def plot_data(filename='points.csv'):
         plt.show()
         
     except FileNotFoundError:
-        print("Ошибка: Файл points.csv не найден.")
+        print("Error: File points.csv not found.")
 
 if __name__ == "__main__":
     plot_data()
