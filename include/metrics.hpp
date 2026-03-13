@@ -21,9 +21,10 @@ namespace Metrics {
     }
 
     // Среднеквадратичная ошибка (MSE) для предсказаний модели
-    template <FloatingPoint T>
-    inline T mse(const std::vector<T>& predictions, const std::vector<T>& targets) {
-        if (predictions.size() != targets.size() || predictions.empty()) return 0; // если вектор пустой - нет ошибок
+    // Формула: (1/n) * sum((pred_i - target_i)^2) для всех предсказаний и истинных классов
+    // Чем меньше MSE, тем точнее модель предсказывает классы точек
+    static T mse(const std::vector<T>& predictions, const std::vector<int>& targets) {
+        if (predictions.empty()) return 0; // если вектор пустой - нет ошибок
         
         T sum_sq_error = 0;
         for (size_t i = 0; i < predictions.size(); ++i)
