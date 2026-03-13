@@ -2,38 +2,36 @@
 
 #include "core.hpp"
 #include <vector>
+// Модуль метрик и функций потерь
 #include <cmath>
 
-// Модуль метрик и функций потерь
-template <FloatingPoint T>
-class Metrics {
-public:
+namespace Metrics {
     // Сумма абсолютных ошибок для набора точек относительно линии y = kx + b
     // Чем меньше, тем лучше модель описывает данные
     // Формула: sum(|y - (kx + b)|) для всех точек
-    static T totalAbsoluteError(const std::vector<Point<T>>& points, T k, T b) {
-        T sum = 0;
+    template <FloatingPoint T>
+    inline T totalAbsoluteError(const std::vector<Point<T>>& points, T k, T b) {
+        T total_error = 0;
         for (const auto& p : points) {
             // отклонение y от линии kx+b
-            sum += std::abs(p.y - (k * p.x + b));
+            T target_y = k * p.x + b;
+            total_error += std::abs(p.y - target_y);
         }
-        return sum;
+        return total_error;
     }
 
-    //------------ На будущее, сейчас не используем ---------------
     // Среднеквадратичная ошибка (MSE) для предсказаний модели
-    // Формула: (1/n) * sum((pred_i - target_i)^2) для всех предсказаний и истинных классов
-    // Чем меньше MSE, тем точнее модель предсказывает классы точек
-    static T mse(const std::vector<T>& predictions, const std::vector<int>& targets) {
-        if (predictions.empty()) return 0; // если вектор пустой - нет ошибок
+    template <FloatingPoint T>
+    inline T mse(const std::vector<T>& predictions, const std::vector<T>& targets) {
+        if (predictions.size() != targets.size() || predictions.empty()) return 0; // если вектор пустой - нет ошибок
         
-        T errorSum = 0;
-        for (size_t i = 0; i < predictions.size(); ++i) 
+        T sum_sq_error = 0;
+        for (size_t i = 0; i < predictions.size(); ++i)
         // Вычисляем квадрат разницы между предсказанием и истинным классом для каждой точки
         {
-            T diff = predictions[i] - static_cast<T>(targets[i]); // Приводим целочисленный класс к типу T для корректного вычитания
-            errorSum += diff * diff; 
+            T diff = predictions[i] - targets[i]; // Приводим целочисленный класс к типу T для корректного вычитания
+            sum_sq_error += diff * diff;
         }
-        return errorSum / static_cast<T>(predictions.size());
+        return sum_sq_error / static_cast<T>(predictions.size());
     }
-};
+}

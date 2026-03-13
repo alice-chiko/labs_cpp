@@ -25,7 +25,7 @@ struct Matrix {
     size_t rows;
     size_t cols;
 
-    Matrix(size_t r, size_t c) : rows(r), cols(c), data(r * c, 0.0f) {}
+    Matrix(size_t r, size_t c) : rows(r), cols(c), data(r * c, T(0)) {}
 
     // Оператор доступа к элементам 
     T& operator()(size_t r, size_t c) {
