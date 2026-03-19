@@ -2,9 +2,9 @@
 #include "include/metrics.hpp"
 #include "include/data_processor.hpp"
 #include "include/logger.hpp"
+#include "include/neural_net.hpp" 
 #include <cassert>
 #include <vector>
-
 void test_math() {
     float res = MathOps::calculateLinear(2.0f, 3.0f, 1.0f);
     Logger::testStatus("Math: Linear y=kx+b", res == 7.0f);
@@ -29,12 +29,25 @@ void test_data() {
     Logger::testStatus("Data: Label correctness", valid);
 }
 
+void test_perceptron_learning() {
+    NeuralNet::Perceptron<float> nn(0.1f);
+    
+    // Создаем простейший набор: точка (0,0) - класс 0, точка (1,1) - класс 1
+    std::vector<PointF> small_data = { PointF(0.0f, 0.0f, 0), PointF(1.0f, 1.0f, 1) };
+    
+    nn.train(small_data, 100);
+    
+    bool works = (nn.predict(0.0f, 0.0f) == 0 && nn.predict(1.0f, 1.0f) == 1);
+    Logger::testStatus("NeuralNet: Basic Convergence", works);
+}
+
 int main() {
     Logger::info("Running Unit Tests...");
     try {
         test_math();
         test_metrics();
         test_data();
+        test_perceptron_learning(); 
         Logger::info("All tests passed successfully!");
     } catch (...) {
         Logger::error("Tests failed with an exception.");
