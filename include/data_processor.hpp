@@ -7,7 +7,7 @@
 #include <string>
 
 namespace DataProcessor {
-    // 1. Генерация данных с шумом
+    // Генерация данных с шумом
     template <FloatingPoint T>
     inline std::vector<Point<T>> generateDataset(size_t count, T k, T b, T noise_level = 0.0) {
         std::vector<Point<T>> dataset;
@@ -32,7 +32,7 @@ namespace DataProcessor {
         return dataset;
     }
 
-    // 2. Разделение на обучающую и тестовую выборки
+    // Разделение на обучающую и тестовую выборки
     template <typename T>
     inline std::pair<std::vector<T>, std::vector<T>> splitDataset(std::vector<T> data, float train_ratio = 0.8f) {
         std::random_device rd;
@@ -46,7 +46,7 @@ namespace DataProcessor {
         return {train_data, test_data};
     }
 
-    // 3. Сохранение в CSV (этого метода не хватало компилятору)
+    // Сохранение в CSV 
     template <FloatingPoint T>
     inline bool saveToCSV(const std::vector<Point<T>>& data, const std::string& filename) {
         std::ofstream file(filename);
