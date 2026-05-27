@@ -11,10 +11,9 @@ concept FloatingPoint = std::is_floating_point_v<T>;
 // Структура точки для бинарного классификатора. 
 template <FloatingPoint T>
 struct Point {
-    T x;           // Координата X
-    T y;           // Координата Y
+    std::vector<T> features; // Любое количество признаков 
     int label;     // Класс (0 или 1) 
-    Point(T x_val, T y_val, int l = 0) : x(x_val), y(y_val), label(l) {}
+    Point(std::vector<T> f, int l = 0) : features(f), label(l) {}
 };
 
 // Матрица

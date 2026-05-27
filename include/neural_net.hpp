@@ -1,31 +1,35 @@
 #pragma once
 #include "core.hpp"
-#include "metrics.hpp" 
 #include <vector>
 #include <random>
+#include <cmath>
 
 namespace NeuralNet {
     template <FloatingPoint T>
     class Perceptron {
     private:
-        Matrix<T> weights; // Матрица весов 1x2 (w_x, w_y) 
+        std::vector<T> weights; // вектор весов динамического размера
         T bias;
         T learning_rate;
 
     public:
-        Perceptron(T lr = 0.01) : weights(1, 2), learning_rate(lr) {
+        Perceptron(size_t input_dim, T lr = 0.01) : learning_rate(lr) {
             std::random_device rd;
             std::mt19937 gen(rd());
             std::uniform_real_distribution<T> dist(-1.0, 1.0);
             
-            weights(0, 0) = dist(gen); // w_x
-            weights(0, 1) = dist(gen); // w_y
+            weights.resize(input_dim);
+            for (size_t i = 0; i < input_dim; ++i) {
+                weights[i] = dist(gen);
+            }
             bias = dist(gen);
         }
 
-        int predict(T x, T y) const {
-            // Используем матричное умножение 
-            T z = x * weights(0, 0) + y * weights(0, 1) + bias;
+        int predict(const std::vector<T>& features) const {
+            T z = bias;
+            for (size_t i = 0; i < features.size(); ++i) {
+                z += features[i] * weights[i];
+            }
             return (z >= 0) ? 1 : 0;
         }
 
@@ -33,23 +37,23 @@ namespace NeuralNet {
             for (int e = 0; e < epochs; ++e) {
                 T epoch_error = 0;
                 for (const auto& pt : dataset) {
-                    int prediction = predict(pt.x, pt.y);
+                    int prediction = predict(pt.features);
                     T error = static_cast<T>(pt.label - prediction);
                     
                     if (error != 0) {
-                        // Обновление весов через матрицу
-                        weights(0, 0) += learning_rate * error * pt.x;
-                        weights(0, 1) += learning_rate * error * pt.y;
+                        for (size_t i = 0; i < weights.size(); ++i) {
+                            weights[i] += learning_rate * error * pt.features[i];
+                        }
                         bias += learning_rate * error;
                         epoch_error += std::abs(error);
                     }
                 }
-                // Если за всю эпоху не было ни одной ошибки — обучение закончено
                 if (epoch_error == 0) break; 
             }
         }
 
-        T get_k() const { return -weights(0, 0) / weights(0, 1); }
-        T get_b() const { return -bias / weights(0, 1); }
+        // геттеры для питона
+        std::vector<T> get_weights() const { return weights; }
+        T get_bias() const { return bias; }
     };
 }
