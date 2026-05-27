@@ -1,5 +1,5 @@
 #pragma once // Защита от повторного включения файла
-
+#include <cstddef>
 #include <vector>
 #include <concepts>
 #include <type_traits>
