@@ -4,9 +4,7 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.datasets import (
-    make_classification,
-)  # для генерации 3 датасета для проверки
+from sklearn.datasets import make_classification # для генерации 3 датасета для проверки
 import os
 import sys
 
